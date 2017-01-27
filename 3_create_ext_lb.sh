@@ -4,15 +4,12 @@
 ## author: pinrojas.com
 ## Sept 2016
 
-NUAGE_HAPROXY_DOCKER="-d -i -t -e \
-NUAGE-DOMAIN=Kubernetes03 -e \
-NUAGE-ZONE=ext-docker -e \
-NUAGE-NETWORK=haproxy -e\
-NUAGE-ENTERPRISE=K8s_Lab -e \
-NUAGE-USER=admin --net=none -v \
-/root/haproxy-docker/haproxy-conf:/usr/local/etc/haproxy"
-K8S_CLUSTER=10.10.10.17
+if [ ! -f ./config.sh ]; then
+    echo "$(date -R) ERROR: File config.sh not found!"
+    exit 1
+fi
 
+source ./config.sh
 
 ## Here we go!
 echo "$(date -R) Here we go!"
@@ -31,7 +28,7 @@ echo "$(date -R) NUAGE_HAPROXY_DOCKER=$NUAGE_HAPROXY_DOCKER"
 echo "$(date -R) Creating ./haproxy-conf/haproxy.cfg"
 
 cat ./haproxy.cfg-head > ./haproxy-conf/haproxy.cfg
-ssh root@$K8S_CLUSTER kubectl get pods -l run=hello-world -o yaml | grep podIP | sed -e 's/ *podIP: *//g' | sed -e 's/^\(.*\)$/  server \1 \1:8080 check/g' >> ./haproxy-conf/haproxy.cfg
+ssh root@$K8S_CLUSTER kubectl get pods -l app=$APP_KUBE -o yaml | grep podIP | sed -e 's/ *podIP: *//g' | sed -e 's/^\(.*\)$/  server \1 \1:8080 check/g' >> ./haproxy-conf/haproxy.cfg
 cat ./haproxy.cfg-tail >> ./haproxy-conf/haproxy.cfg
 
 cat ./haproxy-conf/haproxy.cfg > /dev/null 2>&1

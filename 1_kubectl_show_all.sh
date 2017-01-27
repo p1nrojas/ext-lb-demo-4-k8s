@@ -4,10 +4,12 @@
 ## author: pinrojas.com
 ## Sept 2016
 
-K8S_CLUSTER=10.10.10.17
-APP_KUBE=hello-world
-APP_YAML=hello.yaml
+if [ ! -f ./config.sh ]; then
+    echo "$(date -R) ERROR: File config.sh not found!"
+    exit 1
+fi
 
+source ./config.sh
 
 ## Here we go!
 echo "$(date -R) Here we go!"

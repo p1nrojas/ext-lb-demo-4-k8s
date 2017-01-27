@@ -4,13 +4,12 @@
 ## author: pinrojas.com
 ## Sept 2016
 
-NUAGE_CLIENT_DOCKER="-d -i -t -e \
-NUAGE-DOMAIN=Kubernetes03 -e \
-NUAGE-ZONE=ext-docker -e \
-NUAGE-NETWORK=client -e\
-NUAGE-ENTERPRISE=K8s_Lab -e \
-NUAGE-USER=admin --net=none -v \
-/root/haproxy-docker/client:/tmp/client"
+if [ ! -f ./config.sh ]; then
+    echo "$(date -R) ERROR: File config.sh not found!"
+    exit 1
+fi
+
+source ./config.sh
 
 HAP_IPADDR=`docker exec haproxy01 tail -1 /etc/hosts | grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}'`
 
